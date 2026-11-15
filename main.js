@@ -146,7 +146,7 @@ desktopMQ.addEventListener('change', () => {
 
 const N = CATS.length;
 const MOONSHOWN = new Array(N).fill();   // per-cat moon visibility (mobile collapse)
-const laneTime = CATS.map(() => -4);     // per-lane motion clock (starts held at 12 o'clock)
+const laneTime = CATS.map(() => -2);     // per-lane motion clock (starts held ~2s before drifting)
 let moonAnimTimer = null;
 let focusF = 0;                          // mobile focus-mode zoom progress (0..1)
 let ringScroll = 0, ringVel = 0;         // focus ring: user rotation + momentum
