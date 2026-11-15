@@ -624,6 +624,37 @@ function endDrag() { dragX = null; dragY = null; dragLane = null; }
 window.addEventListener('pointerup', endDrag);
 window.addEventListener('pointercancel', endDrag);
 
+/* ================= mobile: pull down to refresh =================
+   The solar system reserves vertical drags for rotation, so the browser's
+   native pull-to-refresh can't trigger there. This adds the gesture to the
+   top strip (identity + chips) instead, with a cache-busting reload. */
+let pullY = null;
+const pullHint = document.createElement('div');
+pullHint.style.cssText = 'position:fixed;top:8px;left:50%;transform:translateX(-50%);' +
+  'z-index:9999;padding:6px 14px;border-radius:999px;font:600 11px/1 system-ui,sans-serif;' +
+  'letter-spacing:0.08em;color:#22162b;background:#6fffe9;opacity:0;transition:opacity 0.2s;' +
+  'pointer-events:none';
+pullHint.textContent = 'RELEASE TO REFRESH';
+document.body.appendChild(pullHint);
+
+window.addEventListener('pointerdown', e => {
+  if (desktopMQ.matches) return;
+  if (e.target.closest('.cosmos, .panel, .listview, .icon-btn')) return;
+  pullY = e.clientY;
+});
+window.addEventListener('pointermove', e => {
+  if (pullY === null) return;
+  const dy = e.clientY - pullY;
+  pullHint.style.opacity = dy > 30 ? '0.95' : '0';
+  if (dy > 90) {
+    pullY = null;
+    pullHint.style.opacity = '0';
+    location.href = location.pathname + '?v=' + Date.now();   // bust the Pages cache
+  }
+});
+window.addEventListener('pointerup', () => { pullY = null; pullHint.style.opacity = '0'; });
+window.addEventListener('pointercancel', () => { pullY = null; pullHint.style.opacity = '0'; });
+
 /* ================= glow follower ================= */
 
 function moveGlow(e) {
