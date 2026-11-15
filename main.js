@@ -196,6 +196,7 @@ const worlds = CATS.map((cat, ci) => {
   const moonEls = cat.moons.map((m, mi) => {
     const moon = document.createElement('button');
     moon.className = 'moon';
+    moon.dataset.cat = String(ci);   // so moon hover pauses/selects the right lane
     moon.style.setProperty('--size', '34px');
     moon.style.setProperty('--c', cat.color);   // no longer inherits from the planet wrap
     moon.setAttribute('aria-label', m.name);
