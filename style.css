@@ -87,6 +87,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* identity row: search button hugs the right edge */
 .side-head .icon-btn { margin-left: auto; }
 @media (max-width: 899px) {
+  /* short phones: let the page scroll instead of clipping the bottom */
+  body { overflow-y: auto; }
+  .stage { height: auto; min-height: 100dvh; }
   .side-head { justify-content: center; }
   .chips { margin-top: 2px; }
 }
@@ -140,6 +143,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* identity row: search button hugs the right edge */
 .side-head .icon-btn { margin-left: auto; }
 @media (max-width: 899px) {
+  /* short phones: let the page scroll instead of clipping the bottom */
+  body { overflow-y: auto; }
+  .stage { height: auto; min-height: 100dvh; }
   .side-head { justify-content: center; }
   .chips { margin-top: 2px; }
 }
