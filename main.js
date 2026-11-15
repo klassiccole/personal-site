@@ -532,9 +532,9 @@ function setHotLane(ci) {
 }
 
 cosmos.addEventListener('pointermove', e => {
-  /* highlight only when directly over a planet (not just its lane band) */
+  /* hovering a planet or one of its moons freezes that lane */
   if (dragLane === null && focusF <= 0.5) {
-    const w = e.target.closest?.('.cat-planet');
+    const w = e.target.closest?.('.cat-planet, .moon');
     setHotLane(w ? Number(w.dataset.cat) : null);
   }
   moveGlow(e);
