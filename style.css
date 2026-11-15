@@ -88,7 +88,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .side-head .icon-btn { margin-left: auto; }
 @media (max-width: 899px) {
   /* short phones: let the page scroll instead of clipping the bottom */
-  body { overflow-y: auto; }
+  html { overscroll-behavior-y: auto; }
+  body { overflow-y: auto; overscroll-behavior-y: auto; }
   .stage { height: auto; min-height: 100dvh; }
   .side-head { justify-content: center; }
   .chips { margin-top: 2px; }
@@ -144,7 +145,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .side-head .icon-btn { margin-left: auto; }
 @media (max-width: 899px) {
   /* short phones: let the page scroll instead of clipping the bottom */
-  body { overflow-y: auto; }
+  html { overscroll-behavior-y: auto; }
+  body { overflow-y: auto; overscroll-behavior-y: auto; }
   .stage { height: auto; min-height: 100dvh; }
   .side-head { justify-content: center; }
   .chips { margin-top: 2px; }
@@ -438,7 +440,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   display: flex;
   flex-direction: column;
 }
-.panel .panel-inner { max-height: inherit; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; }
+.panel .panel-inner { max-height: inherit; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: auto; }
 .panel.swap .panel-inner {
   animation: panel-in 0.4s var(--ease);
 }
