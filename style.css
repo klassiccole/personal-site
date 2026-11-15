@@ -454,8 +454,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ============ info panel ============ */
 .panel {
   padding: 18px;
-  min-height: 335px;      /* mobile uses fixed height (system stability);
-                             desktop lets the panel grow: it has the room */
   display: flex;
   flex-direction: column;
 }
@@ -746,7 +744,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .chip { padding: 7px 9px; font-size: 0.95rem; letter-spacing: 0; }
   .listview { margin-left: 20px; margin-right: 20px; width: calc(100% - 40px); }
   .cosmos { width: min(88vw, 46dvh); }
-  .panel { padding: 14px; gap: 10px; height: 360px; }
+  .panel { padding: 14px; gap: 10px; height: auto; }
   .panel-inner { gap: 10px; }
   .panel-url { display: none; }
   .panel-cta { padding: 10px 14px; }
