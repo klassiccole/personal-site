@@ -87,10 +87,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* identity row: search button hugs the right edge */
 .side-head .icon-btn { margin-left: auto; }
 @media (max-width: 899px) {
-  /* short phones: let the page scroll instead of clipping the bottom */
+  /* short phones: the page is the ONLY scroll; the info box grows to fit */
   html { overscroll-behavior-y: auto; }
   body { overflow-y: auto; overscroll-behavior-y: auto; }
   .stage { height: auto; min-height: 100dvh; }
+  .panel { height: auto; min-height: 0; }
+  .panel .panel-inner { overflow-y: visible; max-height: none; }
   .side-head { justify-content: center; }
   .chips { margin-top: 2px; }
 }
@@ -144,10 +146,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* identity row: search button hugs the right edge */
 .side-head .icon-btn { margin-left: auto; }
 @media (max-width: 899px) {
-  /* short phones: let the page scroll instead of clipping the bottom */
+  /* short phones: the page is the ONLY scroll; the info box grows to fit */
   html { overscroll-behavior-y: auto; }
   body { overflow-y: auto; overscroll-behavior-y: auto; }
   .stage { height: auto; min-height: 100dvh; }
+  .panel { height: auto; min-height: 0; }
+  .panel .panel-inner { overflow-y: visible; max-height: none; }
   .side-head { justify-content: center; }
   .chips { margin-top: 2px; }
 }
