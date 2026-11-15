@@ -195,6 +195,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   }
   .avatar { width: 132px; height: 132px; }
   .side-profile { width: 80px; height: 80px; }
+  .chip { padding: 6px 10px; font-size: 0.9rem; letter-spacing: 0.03em; }
+  .chips { gap: 7px; }
   .side {
     grid-area: side;
     display: flex;
@@ -709,7 +711,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ============ responsive ============ */
 @media (max-width: 480px) {
   .stage { padding-left: 4px; padding-right: 4px; }
-  .chip { padding: 6px 10px; font-size: 0.9rem; letter-spacing: 0.03em; }
+  .chip { padding: 8px 10px; font-size: 1.06rem; }
   .listview { margin-left: 20px; margin-right: 20px; width: calc(100% - 40px); }
   .cosmos { width: min(88vw, 46dvh); }
   .panel { padding: 14px; gap: 10px; height: 300px; }

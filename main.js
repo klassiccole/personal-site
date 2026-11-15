@@ -445,7 +445,7 @@ function renderPanel() {
           <div class="panel-head">
             <div class="panel-icon"><svg class="icon"><use href="#i-${node.ref.icon}"/></svg></div>
             <div class="panel-titles">
-              <div class="panel-crumbs">${crumbs(cat, cat.label)}</div>
+              <div class="panel-crumbs">${crumbs(cat)}</div>
               <div class="panel-title">${node.ref.name}</div>
             </div>
           </div>
