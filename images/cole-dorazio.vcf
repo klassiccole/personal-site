@@ -1,0 +1,16 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Dorazio;Cole;;;
+FN:Cole Dorazio
+ORG:Cyberflight Studio;
+TITLE:Founder
+TEL;TYPE=CELL:+17048076807
+TEL;TYPE=WORK,CELL:+17047505025
+EMAIL;TYPE=INTERNET:cole.dorazio@gmail.com
+EMAIL;TYPE=WORK:cole@cyberflight.studio
+URL:https://cyberflight.studio/
+ADR;TYPE=HOME:;;Charlotte;NC;;;United States
+BDAY:1998-08-26
+X-SOCIALPROFILE;TYPE=linkedin:https://www.linkedin.com/in/coledorazio/
+REV:2025-11-15T00:00:00Z
+END:VCARD
