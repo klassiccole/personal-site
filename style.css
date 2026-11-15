@@ -710,8 +710,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ============ responsive ============ */
 @media (max-width: 480px) {
-  .stage { padding-left: 4px; padding-right: 4px; }
-  .chip { padding: 8px 10px; font-size: 1.06rem; letter-spacing: 0; }
+  .stage { padding-left: 16px; padding-right: 16px; }
+  /* identity + search button get the padding; chips break out full-width */
+  .chips { margin-left: -12px; margin-right: -12px; }
+  .chip { padding: 7px 9px; font-size: 0.95rem; letter-spacing: 0; }
   .listview { margin-left: 20px; margin-right: 20px; width: calc(100% - 40px); }
   .cosmos { width: min(88vw, 46dvh); }
   .panel { padding: 14px; gap: 10px; height: 300px; }
