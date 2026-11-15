@@ -28,7 +28,7 @@ const CATS = [
     start: 0, drift: 0.13,           /* much faster orbit */
     sway: { amp: 0.38, f: 0.065, ph: 0.5 },   // extra along-lane swing (rad)
     bob:  { amp: 5,    f: 0.19,  ph: 1.2 },   // radial breathing (px)
-    planet: { name: 'Personal', url: null, icon: 'heart', desc: 'Life beyond the keyboard.' },
+    planet: { name: 'Socials', url: null, icon: 'heart', desc: 'Life beyond the keyboard.' },
     moons: [
       { name: 'Instagram', url: 'https://www.instagram.com/klassiccole',    icon: 'instagram', handle: '@klassiccole', desc: 'Personal life in pictures.' },
       { name: 'Facebook',  url: 'https://www.facebook.com/klassiccole',     icon: 'facebook',  handle: '@klassiccole', desc: 'The classic feed.' },
