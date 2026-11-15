@@ -409,7 +409,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ============ chips ============ */
 .chips {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 10px;   /* spacing from the identity block above */
@@ -430,6 +430,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   background: var(--chip-c, var(--mint));
   border-color: transparent;
   font-weight: 600;
+}
+/* the filled pill already signals selection; bold text is what made
+   the row overflow on mobile */
+@media (max-width: 480px) {
+  .chip, .chip.on { font-weight: 400; }
 }
 
 /* ============ info panel ============ */
@@ -703,8 +708,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ============ responsive ============ */
 @media (max-width: 480px) {
-  .stage { padding-left: 16px; padding-right: 16px; }
-  .chip { padding: 8px 10px; font-size: 1.06rem; }
+  .stage { padding-left: 4px; padding-right: 4px; }
+  .chip { padding: 7px 8px; font-size: 1rem; letter-spacing: 0; }
   .listview { margin-left: 20px; margin-right: 20px; width: calc(100% - 40px); }
   .cosmos { width: min(88vw, 46dvh); }
   .panel { padding: 14px; gap: 10px; height: 300px; }

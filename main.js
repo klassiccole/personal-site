@@ -54,7 +54,7 @@ const CATS = [
     ],
   },
   {
-    id: 'professional', label: 'Career', color: '#1282a2',
+    id: 'professional', label: 'Professional', color: '#1282a2',
     psize: 60,
     start: 0, drift: 0.095,
     sway: { amp: 0.36, f: 0.075, ph: 4.8 },
