@@ -399,9 +399,6 @@ function renderPanel() {
           <div class="contact-group-label" style="--c: #e54f6d"><span class="crumb-chip">Personal</span></div>
           <a class="contact-item" style="--c: #e54f6d" href="mailto:cole.dorazio@gmail.com"><svg class="icon"><use href="#i-mail"/></svg>cole.dorazio@gmail.com</a>
           <a class="contact-item" style="--c: #e54f6d" href="tel:+17048076807"><svg class="icon"><use href="#i-phone"/></svg>(704) 807-6807</a>
-          <div class="contact-group-label" style="--c: #6fffe9"><span class="crumb-chip">Business</span></div>
-          <a class="contact-item" style="--c: #6fffe9" href="mailto:cole@cyberflight.studio"><svg class="icon"><use href="#i-mail"/></svg>cole@cyberflight.studio</a>
-          <a class="contact-item" style="--c: #6fffe9" href="tel:+17047505025"><svg class="icon"><use href="#i-phone"/></svg>(704) 750-5025</a>
           <span class="contact-item" style="--c: #ede6f5"><svg class="icon"><use href="#i-pin"/></svg>Charlotte, NC</span>
         </div>
         <div class="panel-actions">
@@ -438,6 +435,10 @@ function renderPanel() {
                 <span class="pr-handle">${r.ref.handle}</span>
               </button>`).join('')}
           </div>
+          ${node.ci === 1 ? `
+          <div class="contact-group-label" style="--c: #6fffe9"><span class="crumb-chip">Business Contact</span></div>
+          <a class="contact-item" style="--c: #6fffe9" href="mailto:cole@cyberflight.studio"><svg class="icon"><use href="#i-mail"/></svg>cole@cyberflight.studio</a>
+          <a class="contact-item" style="--c: #6fffe9" href="tel:+17047505025"><svg class="icon"><use href="#i-phone"/></svg>(704) 750-5025</a>` : ''}
         </div>`;
     } else {
       /* moon: full link card */
