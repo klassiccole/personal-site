@@ -30,6 +30,8 @@ const CATS = [
     bob:  { amp: 5,    f: 0.19,  ph: 1.2 },   // radial breathing (px)
     planet: { name: 'Socials', url: null, icon: 'heart', desc: 'Life beyond the keyboard.' },
     moons: [
+      { name: 'Email',     url: 'mailto:cole.dorazio@gmail.com',            icon: 'mail',      handle: 'cole.dorazio@gmail.com', copyHandle: true, desc: 'Reach me personally.' },
+      { name: 'Phone',     url: 'tel:+17048076807',                        icon: 'phone',     handle: '(704) 807-6807', copyHandle: true, desc: 'Call or text me directly.' },
       { name: 'Instagram', url: 'https://www.instagram.com/klassiccole',    icon: 'instagram', handle: '@klassiccole', desc: 'Personal life in pictures.' },
       { name: 'Facebook',  url: 'https://www.facebook.com/klassiccole',     icon: 'facebook',  handle: '@klassiccole', desc: 'The classic feed.' },
       { name: 'Steam',     url: 'https://steamcommunity.com/id/RubixQube/', icon: 'steam',     handle: 'RubixQube',    desc: 'What I play between builds.' },
@@ -45,6 +47,8 @@ const CATS = [
     bob:  { amp: 4.5,  f: 0.16,  ph: 3.4 },
     planet: { name: 'Cyberflight Studio', url: null, icon: 'globe', desc: 'My studio, where engineering meets art.' },
     moons: [
+      { name: 'Email',     url: 'mailto:cole@cyberflight.studio',                icon: 'mail',      handle: 'cole@cyberflight.studio', copyHandle: true, desc: 'Direct line to the studio inbox.' },
+      { name: 'Phone',     url: 'tel:+17047505025',                              icon: 'phone',     handle: '(704) 750-5025', copyHandle: true, desc: 'Call the studio directly.' },
       { name: 'Website',   url: 'https://cyberflight.studio/',                   icon: 'globe',     handle: 'cyberflight.studio',  desc: "The studio's official home on the web." },
       { name: 'YouTube',   url: 'https://www.youtube.com/@cyberflightstudios',   icon: 'youtube',   handle: '@cyberflightstudios', desc: 'Watch what the studio is building.' },
       { name: 'TikTok',    url: 'https://www.tiktok.com/@cyberflightstudios',    icon: 'tiktok',    handle: '@cyberflightstudios', desc: 'Short cuts from the studio floor.' },
@@ -395,15 +399,14 @@ function renderPanel() {
             <div class="panel-title">Communication Methods</div>
           </div>
         </div>
-        <div class="panel-contact">
-          <div class="contact-group-label" style="--c: #e54f6d"><span class="crumb-chip">Personal</span></div>
-          <a class="contact-item" style="--c: #e54f6d" href="mailto:cole.dorazio@gmail.com"><svg class="icon"><use href="#i-mail"/></svg>cole.dorazio@gmail.com</a>
-          <a class="contact-item" style="--c: #e54f6d" href="tel:+17048076807"><svg class="icon"><use href="#i-phone"/></svg>(704) 807-6807</a>
-          <span class="contact-item" style="--c: #ede6f5"><svg class="icon"><use href="#i-pin"/></svg>Charlotte, NC</span>
+        <div class="panel-actions triple">
+          <a class="panel-copy solid" style="--c: #e54f6d" href="tel:+17048076807"><svg class="icon"><use href="#i-phone"/></svg> Call me</a>
+          <a class="panel-copy solid" style="--c: #e54f6d" href="sms:+17048076807"><svg class="icon"><use href="#i-sms"/></svg> Text me</a>
+          <a class="panel-copy solid" style="--c: #e54f6d" href="mailto:cole.dorazio@gmail.com"><svg class="icon"><use href="#i-mail"/></svg> Email me</a>
         </div>
         <div class="panel-actions">
-          <button class="panel-copy" data-action="links"><svg class="icon"><use href="#i-list"/></svg> All links</button>
-          <a class="panel-copy" href="images/cole-dorazio.vcf" download="Cole_Dorazio.vcf"><svg class="icon"><use href="#i-download"/></svg> Add to contacts</a>
+          <button class="panel-copy light" data-action="links"><svg class="icon"><use href="#i-list"/></svg> All links</button>
+          <a class="panel-copy light" href="images/cole-dorazio.vcf" download="Cole_Dorazio.vcf"><svg class="icon"><use href="#i-download"/></svg> Add to contacts</a>
         </div>
       </div>`;
   } else {
@@ -434,12 +437,7 @@ function renderPanel() {
                 <span class="pr-name">${r.ref.name}</span>
                 <span class="pr-handle">${r.ref.handle}</span>
               </button>`).join('')}
-          </div>
-          ${node.ci === 1 ? `
-          <div class="contact-group-label" style="--c: #6fffe9"><span class="crumb-chip">Business Contact</span></div>
-          <a class="contact-item" style="--c: #6fffe9" href="mailto:cole@cyberflight.studio"><svg class="icon"><use href="#i-mail"/></svg>cole@cyberflight.studio</a>
-          <a class="contact-item" style="--c: #6fffe9" href="tel:+17047505025"><svg class="icon"><use href="#i-phone"/></svg>(704) 750-5025</a>` : ''}
-        </div>`;
+          </div>`;
     } else {
       /* moon: full link card */
       panel.innerHTML = `
