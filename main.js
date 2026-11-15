@@ -25,7 +25,7 @@ const CATS = [
   {
     id: 'personal', label: 'Personal', color: '#e54f6d',
     psize: 60,
-    start: 0, drift: 0.13,           /* much faster orbit */
+    start: 0, drift: 0.13,           /* desktop: starts at 12 o'clock */
     sway: { amp: 0.38, f: 0.065, ph: 0.5 },   // extra along-lane swing (rad)
     bob:  { amp: 5,    f: 0.19,  ph: 1.2 },   // radial breathing (px)
     planet: { name: 'Socials', url: null, icon: 'heart', desc: 'Life beyond the keyboard.' },
@@ -40,7 +40,7 @@ const CATS = [
   {
     id: 'cyberflight', label: 'Business', color: '#6fffe9',
     psize: 60,
-    start: 0, drift: -0.11,
+    start: 120, drift: -0.11,      /* desktop: starts opposite Personal */
     sway: { amp: 0.34, f: 0.055, ph: 2.6 },
     bob:  { amp: 4.5,  f: 0.16,  ph: 3.4 },
     planet: { name: 'Cyberflight Studio', url: null, icon: 'globe', desc: 'My studio, where engineering meets art.' },
@@ -56,7 +56,7 @@ const CATS = [
   {
     id: 'professional', label: 'Professional', color: '#1282a2',
     psize: 60,
-    start: 0, drift: 0.095,
+    start: 240, drift: 0.095,     /* desktop: starts opposite both */
     sway: { amp: 0.36, f: 0.075, ph: 4.8 },
     bob:  { amp: 5,    f: 0.22,  ph: 5.1 },
     planet: { name: 'Computer Science', url: null, icon: 'brief', desc: 'Where I work, ship, and network.' },
