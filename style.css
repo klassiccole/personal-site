@@ -728,5 +728,5 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     width: clamp(104px, 40vw, 176px);
     height: clamp(104px, 40vw, 176px);
   }
-  .cosmos { margin-top: -18px; margin-bottom: 6px; }   /* pull the system up */
+  .cosmos { margin-top: 0; margin-bottom: 6px; }   /* restore the space above the system */
 }
