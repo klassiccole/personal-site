@@ -25,7 +25,7 @@ const CATS = [
   {
     id: 'personal', label: 'Personal', color: '#e54f6d',
     psize: 60,
-    start: 0, drift: 0.13,           /* desktop: starts at 12 o'clock */
+    start: 0, drift: 0.13,           /* desktop: start slot shuffled each load */
     sway: { amp: 0.38, f: 0.065, ph: 0.5 },   // extra along-lane swing (rad)
     bob:  { amp: 5,    f: 0.19,  ph: 1.2 },   // radial breathing (px)
     planet: { name: 'Socials', url: null, icon: 'heart', desc: 'Life beyond the keyboard.' },
@@ -40,7 +40,7 @@ const CATS = [
   {
     id: 'cyberflight', label: 'Business', color: '#6fffe9',
     psize: 60,
-    start: 120, drift: -0.11,      /* desktop: starts opposite Personal */
+    start: 120, drift: -0.11,
     sway: { amp: 0.34, f: 0.055, ph: 2.6 },
     bob:  { amp: 4.5,  f: 0.16,  ph: 3.4 },
     planet: { name: 'Cyberflight Studio', url: null, icon: 'globe', desc: 'My studio, where engineering meets art.' },
@@ -56,7 +56,7 @@ const CATS = [
   {
     id: 'professional', label: 'Professional', color: '#1282a2',
     psize: 60,
-    start: 240, drift: 0.095,     /* desktop: starts opposite both */
+    start: 240, drift: 0.095,
     sway: { amp: 0.36, f: 0.075, ph: 4.8 },
     bob:  { amp: 5,    f: 0.22,  ph: 5.1 },
     planet: { name: 'Computer Science', url: null, icon: 'brief', desc: 'Where I work, ship, and network.' },
@@ -896,6 +896,17 @@ new ResizeObserver(() => {
 }).observe(cosmos);
 
 /* ================= init ================= */
+
+/* desktop: shuffle the three start slots (0/120/240) each load, so every
+   visit opens with a unique arrangement */
+{
+  const slots = [0, 120, 240];
+  for (let i = slots.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [slots[i], slots[j]] = [slots[j], slots[i]];
+  }
+  CATS.forEach((cat, i) => { cat.start = slots[i]; });
+}
 
 measure();
 syncGeometry();
