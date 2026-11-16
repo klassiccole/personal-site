@@ -464,7 +464,22 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   display: flex;
   flex-direction: column;
 }
-.panel .panel-inner { max-height: inherit; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: auto; }
+.panel .panel-inner {
+  max-height: inherit;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: auto;
+  scrollbar-width: thin;                       /* Firefox */
+  scrollbar-color: rgba(111, 255, 233, 0.35) transparent;
+}
+/* Chrome/Edge/Safari: themed scrollbar to match the palette */
+.panel .panel-inner::-webkit-scrollbar { width: 8px; }
+.panel .panel-inner::-webkit-scrollbar-track { background: transparent; }
+.panel .panel-inner::-webkit-scrollbar-thumb {
+  background: rgba(111, 255, 233, 0.3);
+  border-radius: 999px;
+}
+.panel .panel-inner::-webkit-scrollbar-thumb:hover { background: rgba(111, 255, 233, 0.5); }
 .panel.swap .panel-inner {
   animation: panel-in 0.4s var(--ease);
 }
