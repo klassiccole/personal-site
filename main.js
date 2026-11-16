@@ -121,11 +121,15 @@ function syncGeometry() {
       }
       pathEls.forEach(p => { p.style.opacity = ''; });
     } else {
-      /* phones/tablets: ONE shared lane — all three planets ride a single
-         ring, evenly spaced, at full size. One scroll finds everything. */
-      GEO.pscale = 1;
-      const pR = planetR0;
-      const L1 = Math.min(sunR + pR + 20, R - pR - 6);   // extra sun-to-orbit spacing
+      /* phones/tablets: ONE shared flat ring — all three planets evenly
+         spaced, enlarged for readable labels. Overlaps the sun's outer
+         edge only when the screen can't fit the ideal clearance. */
+      GEO.pscale = 1.52;
+      const pR = planetR0 * GEO.pscale;
+      const ideal = sunR + pR + 14;
+      const maxFit = R - pR - 8;
+      const minRing = sunR * 0.92;   // fallback: graze the avatar's outer edge
+      const L1 = Math.max(minRing, Math.min(ideal, maxFit));
       GEO.lanes = [L1, L1, L1].map(v => v / R);   // store as fraction of R
       /* only the first ellipse is drawn; the others would just stack */
       pathEls.forEach((p, ci2) => {
@@ -166,7 +170,7 @@ let cosmosSize = 0;
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 
-const TILT = 0.5;   // mobile lane tilt: 1 = flat top-down, 0 = edge-on
+const TILT = 1;     // mobile main screen is flat top-down now
 const pathEls = CATS.map((cat, ci) => {
   const c = document.createElementNS(SVGNS, 'ellipse');
   c.setAttribute('cx', '50');
@@ -500,9 +504,8 @@ function syncChips() {
 function laneAt(clientX, clientY) {
   if (!cosmosSize) return null;
   const rect = cosmos.getBoundingClientRect();
-  const tilt = desktopMQ.matches ? 1 : TILT;
   const d = Math.hypot(clientX - (rect.left + rect.width / 2),
-                      (clientY - (rect.top + rect.height / 2)) / tilt);
+                      clientY - (rect.top + rect.height / 2));
   let best = null, bestD = Infinity;
   CATS.forEach((cat, ci) => {
     const diff = Math.abs(d - GEO.lanes[ci] * cosmosSize / 2);
@@ -750,19 +753,12 @@ function layout(t, dt) {
       op = 0.72 + 0.28 * norm;
       z = 10 + Math.round(norm * 10);
     } else {
-      /* 3D tilted plane: planets grow and brighten swinging around the
-         front (bottom), shrink and slip behind the sun's glass at the back */
-      const dn = (1 - Math.cos(pa)) / 2;          // 0 = far/back, 1 = near/front
+      /* flat top-down: uniform size/brightness, planets layered above the sun */
       px = Math.sin(pa) * rr;
-      py = -Math.cos(pa) * rr * tilt;
-      s = 0.5 + 1.1 * dn;
-      op = 0.25 + 0.75 * dn;
-      if (dn < 0.22) {
-        z = 4;                                    // behind the sun's glass
-        op *= 0.35;
-      } else {
-        z = 10 + Math.round(dn * 20);
-      }
+      py = -Math.cos(pa) * rr;
+      s = 1;
+      op = 1;
+      z = 14;
     }
     let sF = s;                       // zoom scale (grows in focus)
     const w = worlds[ci];
@@ -828,12 +824,11 @@ function layout(t, dt) {
         : pa - dir * (first + (iB++) * step);
       let mx, my, ms, mz, mOp = 1;
       if (!desktopMQ.matches) {
-        const dnm = (1 - Math.cos(a)) / 2;        // 0 = far/back, 1 = near/front
+        /* flat top-down: uniform, layered above the sun */
         mx = Math.sin(a) * laneR;
-        my = -Math.cos(a) * laneR * tilt;
-        ms = 0.55 + 0.75 * dnm;
-        mz = dnm < 0.22 ? 4 : 10 + Math.round(dnm * 20);
-        if (dnm < 0.22) mOp = 0.45;               // ghosting behind the sun glass
+        my = -Math.cos(a) * laneR;
+        ms = 1;
+        mz = 14;
       } else {
         mx = Math.sin(a) * laneR;
         my = -Math.cos(a) * laneR;
