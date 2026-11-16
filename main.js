@@ -50,9 +50,9 @@ const CATS = [
       { name: 'Email',     url: 'mailto:cole@cyberflight.studio',                icon: 'mail',      handle: 'cole@cyberflight.studio', copyHandle: true, desc: 'Direct line to the studio inbox.' },
       { name: 'Phone',     url: 'tel:+17047505025',                              icon: 'phone',     handle: '(704) 750-5025', copyHandle: true, desc: 'Call the studio directly.' },
       { name: 'Website',   url: 'https://cyberflight.studio/',                   icon: 'globe',     handle: 'cyberflight.studio',  desc: "The studio's official home on the web." },
-      { name: 'YouTube',   url: 'https://www.youtube.com/@cyberflightstudios',   icon: 'youtube',   handle: '@cyberflightstudios', desc: 'Watch what the studio is building.' },
-      { name: 'TikTok',    url: 'https://www.tiktok.com/@cyberflightstudios',    icon: 'tiktok',    handle: '@cyberflightstudios', desc: 'Short cuts from the studio floor.' },
-      { name: 'Instagram', url: 'https://www.instagram.com/cyberflightstudios/', icon: 'instagram', handle: '@cyberflightstudios', desc: 'Behind the scenes, frame by frame.' },
+      { name: 'YouTube',   url: 'https://www.youtube.com/@cyberflightstudios',   icon: 'youtube',   handle: '@cyberflightstudios', desc: 'Full-length drone and studio videos.' },
+      { name: 'TikTok',    url: 'https://www.tiktok.com/@cyberflightstudios',    icon: 'tiktok',    handle: '@cyberflightstudios', desc: 'Quick hits of our drone and camera work.' },
+      { name: 'Instagram', url: 'https://www.instagram.com/cyberflightstudios/', icon: 'instagram', handle: '@cyberflightstudios', desc: 'Drone shots, photography, and videography.' },
       { name: 'Cash App',  url: 'https://cash.app/$cyberflightstudios',        icon: 'cashapp',   handle: '$cyberflightstudios', desc: 'Support the studio. Every bit fuels the next project.' },
       { name: 'Venmo',     url: 'https://www.venmo.com/u/cyberflightstudios',      icon: 'venmo',     handle: '@cyberflightstudios', desc: 'Prefer Venmo? The studio takes that too.' },
     ],
@@ -275,14 +275,6 @@ CATS.forEach((cat) => {
   group.innerHTML = `<div class="lv-group-title">${cat.label}</div>`;
   if (cat.planet.url) {
     group.appendChild(lvRow(cat.planet));
-  } else {
-    const d = document.createElement('div');
-    d.className = 'lv-row';
-    d.innerHTML = `
-      <svg class="icon"><use href="#i-${cat.planet.icon}"/></svg>
-      <span><span class="lv-row-name">${cat.planet.name}</span><br><span class="lv-row-desc">${cat.planet.desc}</span></span>`;
-    d.dataset.search = `${cat.planet.name} ${cat.label} ${cat.planet.desc}`.toLowerCase();
-    group.appendChild(d);
   }
   cat.moons.forEach(m => group.appendChild(lvRow(m)));
   lvGroups.appendChild(group);
