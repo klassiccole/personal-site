@@ -31,10 +31,10 @@ const CATS = [
     planet: { name: 'Socials', url: null, icon: 'heart', desc: 'Life beyond the keyboard.' },
     moons: [
       { name: 'Email',     url: 'mailto:cole.dorazio@gmail.com',            icon: 'mail',      handle: 'cole.dorazio@gmail.com', copyHandle: true, desc: 'Reach me personally.' },
-      { name: 'Phone',     url: 'tel:+17048076807',                        icon: 'phone',     handle: '(704) 807-6807', copyHandle: true, desc: 'Call or text me directly.' },
+      { name: 'Phone',     url: 'tel:+17048076807',                        icon: 'phone',     handle: '(704) 807-6807', copyHandle: true, desc: 'Text or call me directly.' },
       { name: 'Instagram', url: 'https://www.instagram.com/klassiccole',    icon: 'instagram', handle: '@klassiccole', desc: 'Personal life in pictures.' },
       { name: 'Facebook',  url: 'https://www.facebook.com/klassiccole',     icon: 'facebook',  handle: '@klassiccole', desc: 'The classic feed.' },
-      { name: 'Steam',     url: 'https://steamcommunity.com/id/RubixQube/', icon: 'steam',     handle: 'RubixQube',    desc: 'What I play between builds.' },
+      { name: 'Steam',     url: 'https://steamcommunity.com/id/RubixQube/', icon: 'steam',     handle: 'RubixQube',    desc: 'What I like to play.' },
       { name: 'MakerWorld', url: 'https://makerworld.com/en/@KlassicCole',   icon: 'makerworld', handle: '@KlassicCole', desc: 'My 3D print designs and models.' },
       { name: 'Discord',    url: 'https://discord.com/users/168185748904738816', icon: 'discord', handle: 'qube_of_rubix', copyHandle: true, desc: 'Say hi on Discord.' },
     ],
@@ -48,7 +48,7 @@ const CATS = [
     planet: { name: 'Cyberflight Studio', url: null, icon: 'globe', desc: 'My studio, where engineering meets art.' },
     moons: [
       { name: 'Email',     url: 'mailto:cole@cyberflight.studio',                icon: 'mail',      handle: 'cole@cyberflight.studio', copyHandle: true, desc: 'Direct line to the studio inbox.' },
-      { name: 'Phone',     url: 'tel:+17047505025',                              icon: 'phone',     handle: '(704) 750-5025', copyHandle: true, desc: 'Call the studio directly.' },
+      { name: 'Phone',     url: 'tel:+17047505025',                              icon: 'phone',     handle: '(704) 750-5025', copyHandle: true, desc: 'Text or call the studio.' },
       { name: 'Website',   url: 'https://cyberflight.studio/',                   icon: 'globe',     handle: 'cyberflight.studio',  desc: "The studio's official home on the web." },
       { name: 'YouTube',   url: 'https://www.youtube.com/@cyberflightstudios',   icon: 'youtube',   handle: '@cyberflightstudios', desc: 'Full-length drone and studio videos.' },
       { name: 'TikTok',    url: 'https://www.tiktok.com/@cyberflightstudios',    icon: 'tiktok',    handle: '@cyberflightstudios', desc: 'Quick hits of our drone and camera work.' },
