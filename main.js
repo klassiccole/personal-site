@@ -113,6 +113,7 @@ function syncGeometry() {
     if (desktopMQ.matches) {
       /* desktop: inner lane pinned; outer two split the rest evenly */
       GEO.pscale = 1;
+      GEO.mscale = 1;
       const L3max = R - planetR0 - 2;
       const L1 = R * 0.40;
       const gap = (L3max - L1) / 2;
@@ -125,6 +126,7 @@ function syncGeometry() {
          spaced, enlarged for readable labels. Overlaps the sun's outer
          edge only when the screen can't fit the ideal clearance. */
       GEO.pscale = 1.52;
+      GEO.mscale = 1;                 // moons: original 34px size
       const pR = planetR0 * GEO.pscale;
       const ideal = sunR + pR + 14;
       const maxFit = R - pR - 8;
@@ -139,6 +141,7 @@ function syncGeometry() {
   }
 
   cosmos.style.setProperty('--pscale', String(GEO.pscale || 1));
+  cosmos.style.setProperty('--mscale', String(GEO.mscale || 1));
   pathEls.forEach((p, ci) => {
     p.setAttribute('rx', String(GEO.lanes[ci] * 50));
     p.setAttribute('ry', String(GEO.lanes[ci] * 50 * (desktopMQ.matches ? 1 : TILT)));
@@ -802,7 +805,8 @@ function layout(t, dt) {
     }
     MOONSHOWN[ci] = shown;
 
-    const moonR = 17 * ps, pad = 10 * ps;
+    const ms = GEO.mscale || 1;
+    const moonR = 17 * ms, pad = 10 * ms;
     const step = (moonR * 2 + pad) / laneR;
     const first = ((cat.psize / 2) * ps + moonR + pad) / laneR;
     const nAhead = Math.ceil(cat.moons.length / 2);
@@ -842,7 +846,7 @@ function layout(t, dt) {
            moons grow to exactly main-screen planet size */
         const n = cat.moons.length;
         const planetHalfVis = ((cat.psize / 2) * ps) * sF;
-        const moonVisR = (17 * ps) * (cat.psize / 34) * 1.18;
+        const moonVisR = (17 * ms) * (cat.psize / 34) * 1.18;
         const ringR = planetHalfVis + 10 + moonVisR;
         const ra = (mi * (Math.PI * 2) / n) + ci * 0.9 + ringScroll + t * 0.12 * dir;
         mx += (Math.sin(ra) * ringR - mx) * e;
