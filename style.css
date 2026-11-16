@@ -277,11 +277,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   z-index: 2;                           /* above the disc */
   white-space: nowrap;
   transition: opacity 0.3s;
-  font-size: 0.78rem;
+  font-size: 0.6rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--c) 75%, #ede6f5);
+  color: color-mix(in srgb, var(--c) 65%, #ede6f5);
   background: rgba(23, 14, 30, 0.72);   /* readable even over a passing body */
   padding: 3px 8px;
   border-radius: 999px;
@@ -299,8 +299,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .moon {
   position: absolute;
   left: 50%; top: 50%;   /* anchored at cosmos center; transforms are center-relative */
-  width: calc(var(--size) * var(--pscale, 1));
-  height: calc(var(--size) * var(--pscale, 1));
+  width: calc(var(--size) * var(--mscale, 1));
+  height: calc(var(--size) * var(--mscale, 1));
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -787,5 +787,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     width: clamp(104px, 40vw, 176px);
     height: clamp(104px, 40vw, 176px);
   }
+  .planet-label { font-size: 0.78rem; letter-spacing: 0.12em; }   /* larger labels for readability */
   .cosmos { margin-top: 0; margin-bottom: 6px; }   /* restore the space above the system */
 }
