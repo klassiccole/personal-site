@@ -207,8 +207,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     flex-direction: column;
     justify-content: flex-start;
     gap: 14px;
+    min-height: 0;        /* allow children to shrink against the column */
   }
-  .panel { height: auto; min-height: 335px; }   /* desktop: grow freely, never forced-scroll */
+  .panel {
+    flex: 0 1 auto;       /* hug content; shrink (with inner scroll) only if too tall */
+    min-height: 0;
+    overflow: hidden;
+  }
+  .panel .panel-inner { max-height: none; }
+  .panel { height: auto; }   /* desktop: box is exactly as tall as its content */
 }
 
 .orbit-paths { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
