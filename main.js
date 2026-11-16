@@ -113,7 +113,7 @@ function syncGeometry() {
     if (desktopMQ.matches) {
       /* desktop: inner lane pinned; outer two split the rest evenly */
       GEO.pscale = 1;
-      GEO.mscale = 1;
+      GEO.mscale = 1.18;   /* desktop: slightly larger moons */
       const L3max = R - planetR0 - 2;
       const L1 = R * 0.40;
       const gap = (L3max - L1) / 2;
