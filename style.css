@@ -186,7 +186,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* desktop: bigger system, wider lane gaps, info panel docked to the side */
 @media (min-width: 900px) {
   .stage {
-    max-width: 1400px;
+    max-width: 1480px;
     grid-template-columns: 424px 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
@@ -197,7 +197,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     grid-area: cosmos;
     width: min(100%, 90dvh, 980px);   /* sized to its column: never under the sidebar */
   }
-  .avatar { width: 132px; height: 132px; }
+  .stage .avatar { width: 208px; height: 208px; }
   .side-profile { width: 80px; height: 80px; }
   .chip { padding: 6px 10px; font-size: 0.9rem; letter-spacing: 0.03em; }
   .chips { gap: 7px; }
@@ -226,7 +226,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   opacity: 0;
   transition: opacity 0.3s, stroke-width 0.3s;
 }
-.orbit-path.hot { opacity: 0.85; stroke-width: 0.42; }   /* hovered scroll lane */
+/* hovered planet: the single orbit lights up in that planet's color */
+.orbit-path.hot {
+  opacity: 0.85;
+  stroke-width: 0.42;
+  stroke: var(--hot-c, var(--mint));
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--hot-c, var(--mint)) 60%, transparent));
+}
 .orbit-path.sel { opacity: 0.55; }                        /* lane of the selected world */
 
 /* ---- category planet ---- */
@@ -276,6 +282,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   transform: translate(-50%, -50%);
   z-index: 2;                           /* above the disc */
   white-space: nowrap;
+  text-align: center;
   transition: opacity 0.3s;
   font-size: 0.6rem;
   font-weight: 600;
@@ -350,7 +357,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   filter: blur(1.5px);
 }
 .cosmos.focus-mode .orbit-path { opacity: 0 !important; }
-.cosmos.focus-mode .planet-label { opacity: 0; }   /* panel shows the name in focus */
+
 .avatar img {
   width: 100%; height: 100%;
   border-radius: 50%;
@@ -787,6 +794,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     width: clamp(104px, 40vw, 176px);
     height: clamp(104px, 40vw, 176px);
   }
-  .planet-label { font-size: 0.78rem; letter-spacing: 0.12em; }   /* larger labels for readability */
+  .planet-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    padding: 2px 5px;
+    max-width: calc(100% + 8px);   /* pill may overhang the disc by 4px/side, no more */
+  }
   .cosmos { margin-top: 0; margin-bottom: 6px; }   /* restore the space above the system */
 }

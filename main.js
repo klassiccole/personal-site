@@ -45,7 +45,7 @@ const CATS = [
     start: 120, drift: -0.11,
     sway: { amp: 0.34, f: 0.055, ph: 2.6 },
     bob:  { amp: 4.5,  f: 0.16,  ph: 3.4 },
-    planet: { name: 'Cyberflight Studio', url: null, icon: 'globe', desc: 'My studio, where engineering meets art.' },
+    planet: { name: 'Cyberflight Studios', url: null, icon: 'globe', desc: 'My studio, where engineering meets art.' },
     moons: [
       { name: 'Email',     url: 'mailto:cole@cyberflight.studio',                icon: 'mail',      handle: 'cole@cyberflight.studio', copyHandle: true, desc: 'Direct line to the studio inbox.' },
       { name: 'Phone',     url: 'tel:+17047505025',                              icon: 'phone',     handle: '(704) 750-5025', copyHandle: true, desc: 'Text or call the studio.' },
@@ -92,71 +92,53 @@ const lvGroups = document.getElementById('lvGroups');
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* geometry: lane radii are DERIVED so the gap between the sun's edge,
-   each lane, is identical, while the outer system stays inside the
-   cosmos. The static arrays below are only fallbacks for tiny screens. */
-const desktopMQ = window.matchMedia('(min-width: 900px)');
-const GEO_DESKTOP = { lanes: [0.40, 0.63, 0.86] };
-const GEO_MOBILE  = { lanes: [0.45, 0.61, 0.77] };
-let GEO = desktopMQ.matches ? GEO_DESKTOP : GEO_MOBILE;
+/* geometry: lane radii are computed by syncGeometry(); the desktop and
+   mobile versions of the site mirror each other. */
+const desktopMQ = window.matchMedia('(min-width: 900px)');   // platform switch (>= 900px = desktop)
+let GEO = { lanes: [] };                                     // lane radii + size scales
 const avatarEl = document.getElementById('avatar');
 avatarEl.addEventListener('click', () => { if (!dragMoved) selectHome(); });   // sun = splash
 
 function syncGeometry() {
-  GEO = desktopMQ.matches ? GEO_DESKTOP : GEO_MOBILE;
 
   if (cosmosSize) {
     const R = cosmosSize / 2;
     const sunR = avatarEl.offsetWidth / 2;
     const planetR0 = CATS[0].psize / 2;
 
-    if (desktopMQ.matches) {
-      /* desktop: inner lane pinned; outer two split the rest evenly */
-      GEO.pscale = 1;
-      GEO.mscale = 1.18;   /* desktop: slightly larger moons */
-      const L3max = R - planetR0 - 2;
-      const L1 = R * 0.40;
-      const gap = (L3max - L1) / 2;
-      if (gap >= 18) {
-        GEO.lanes = [L1, L1 + gap, L1 + 2 * gap].map(v => v / R);
-      }
-      pathEls.forEach(p => { p.style.opacity = ''; });
-    } else {
-      /* phones/tablets: ONE shared flat ring — all three planets evenly
-         spaced, enlarged for readable labels. Overlaps the sun's outer
-         edge only when the screen can't fit the ideal clearance. */
-      GEO.pscale = 1.52;
-      GEO.mscale = 1;                 // moons: original 34px size
-      const pR = planetR0 * GEO.pscale;
-      const ideal = sunR + pR + 14;
-      const maxFit = R - pR - 8;
-      const minRing = sunR * 0.92;   // fallback: graze the avatar's outer edge
-      const L1 = Math.max(minRing, Math.min(ideal, maxFit));
-      GEO.lanes = [L1, L1, L1].map(v => v / R);   // store as fraction of R
-      /* only the first ellipse is drawn; the others would just stack */
-      pathEls.forEach((p, ci2) => {
-        p.style.opacity = ci2 > 0 ? '0' : '';
-      });
-    }
+    /* ONE shared flat ring on desktop and mobile alike (mirrored behavior);
+       desktop focus-ring moons run slightly larger */
+    GEO.pscale = desktopMQ.matches ? 1.5 : 1.2;
+    GEO.mscale = desktopMQ.matches ? 1.2 : 1;
+    const pR = planetR0 * GEO.pscale;
+    const ideal = sunR + pR + 60;   // wide sun-to-orbit spacing
+    const maxFit = R - pR - 8;
+    const minRing = sunR * 0.92;   // fallback: graze the avatar's outer edge
+    const L1 = Math.max(minRing, Math.min(ideal, maxFit));
+    GEO.lanes = [L1, L1, L1].map(v => v / R);
+    /* only the first ellipse is drawn; the others would just stack */
+    pathEls.forEach((p, ci2) => {
+      p.style.opacity = ci2 > 0 ? '0' : '';
+    });
   }
 
   cosmos.style.setProperty('--pscale', String(GEO.pscale || 1));
   cosmos.style.setProperty('--mscale', String(GEO.mscale || 1));
   pathEls.forEach((p, ci) => {
     p.setAttribute('rx', String(GEO.lanes[ci] * 50));
-    p.setAttribute('ry', String(GEO.lanes[ci] * 50 * (desktopMQ.matches ? 1 : TILT)));
+    p.setAttribute('ry', String(GEO.lanes[ci] * 50));
   });
 }
-const syncLaneRadii = syncGeometry;      // alias during transition
 desktopMQ.addEventListener('change', () => {
-  syncLaneRadii();
+  syncGeometry();
   if (reducedMotion) layout(0, 0);
 });
 
 /* ================= motion state ================= */
 
 const N = CATS.length;
-const MOONSHOWN = new Array(N).fill();   // per-cat moon visibility (mobile collapse)
+/* shared motion state: written by the input handlers, read by layout() */
+const MOONSHOWN = new Array(N).fill();   // per-cat moon visibility (collapse into planet)
 const laneTime = CATS.map(() => -2);     // per-lane motion clock (starts held ~2s before drifting)
 let moonAnimTimer = null;
 let focusF = 0;                          // mobile focus-mode zoom progress (0..1)
@@ -173,19 +155,20 @@ let cosmosSize = 0;
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 
-const TILT = 1;     // mobile main screen is flat top-down now
+/* orbit lane ellipses (SVG) */
 const pathEls = CATS.map((cat, ci) => {
   const c = document.createElementNS(SVGNS, 'ellipse');
   c.setAttribute('cx', '50');
   c.setAttribute('cy', '50');
   c.setAttribute('rx', String(GEO.lanes[ci] * 50));
-  c.setAttribute('ry', String(GEO.lanes[ci] * 50 * (desktopMQ.matches ? 1 : TILT)));
+  c.setAttribute('ry', String(GEO.lanes[ci] * 50));
   c.setAttribute('class', 'orbit-path');
   c.style.stroke = cat.color;
   pathsSvg.appendChild(c);
   return c;
 });
 
+/* planets + moons (DOM): one wrap per planet, moons as direct cosmos children */
 const worlds = CATS.map((cat, ci) => {
   const wrap = document.createElement('div');
   wrap.className = 'cat-planet';
@@ -200,7 +183,7 @@ const worlds = CATS.map((cat, ci) => {
   const kPlanet = FLAT.findIndex(n => n.ci === ci && n.isPlanet);
   wrap.addEventListener('click', () => {
     if (dragMoved) return;
-    if (!desktopMQ.matches && focusF > 0.5) return selectHome();  // focused: tap planet = back
+    if (focusF > 0.5) return selectHome();  // focused: tap planet = back
     select(kPlanet);
   });
 
@@ -222,7 +205,7 @@ const worlds = CATS.map((cat, ci) => {
   });
 
   cosmos.appendChild(wrap);
-  return { wrap, moonEls };
+  return { wrap, labelEl: wrap.querySelector('.planet-label'), moonEls };
 });
 
 /* ================= stars ================= */
@@ -351,7 +334,10 @@ function select(k) {
   cosmos.classList.remove('home');
   const node = FLAT[k];
   const w = worlds[node.ci];
-  pathEls.forEach((p, i) => p.classList.toggle('sel', i === node.ci));
+  pathEls.forEach((p, i) => {
+    p.classList.toggle('sel', i === 0);
+    if (i === 0) p.style.stroke = CATS[node.ci].color;
+  });
   if (node.isPlanet) w.wrap.classList.add('focused');
   else w.moonEls[node.mi].classList.add('focused');
 
@@ -359,6 +345,7 @@ function select(k) {
   syncChips();
 }
 
+/* panel rendering helpers */
 const host = url => {
   try {
     const u = new URL(url, window.location.href);
@@ -458,6 +445,7 @@ function renderPanel() {
 }
 
 /* panel interactions: moon rows, copy buttons, home CTAs */
+/* panel interaction delegation: moon rows, copy buttons, home CTAs */
 panel.addEventListener('click', e => {
   const row = e.target.closest('.panel-row');
   if (row) { select(Number(row.dataset.node)); return; }
@@ -497,6 +485,7 @@ panel.addEventListener('click', e => {
   }
 });
 
+/* highlight the chip matching the current selection */
 function syncChips() {
   const key = sel === -1 ? 'home' : CATS[FLAT[sel].ci].id;
   chipEls.forEach(c => c.el.classList.toggle('on', c.key === key));
@@ -526,7 +515,12 @@ function laneFromEvent(e) {
 function setHotLane(ci) {
   if (hoverLane === ci) return;
   hoverLane = ci;
-  pathEls.forEach((p, i) => p.classList.toggle('hot', i === ci));
+  /* only pathEls[0] is drawn (single shared orbit): tint it to the
+     hovered planet's color */
+  pathEls.forEach((p, i) => {
+    p.classList.toggle('hot', ci !== null && i === 0);
+    if (i === 0) p.style.stroke = ci === null ? '' : CATS[ci].color;
+  });
 }
 
 cosmos.addEventListener('pointermove', e => {
@@ -539,18 +533,17 @@ cosmos.addEventListener('pointermove', e => {
 });
 cosmos.addEventListener('pointerleave', () => setHotLane(null));
 
-/* ================= input: wheel spins the hovered lane ================= */
+/* ================= input: wheel spins the ring (faster over a planet) ================= */
 
 cosmos.addEventListener('wheel', e => {
   e.preventDefault();
-  if (!desktopMQ.matches && focusF > 0.5) {
+  if (focusF > 0.5) {
     /* focus mode: the wheel spins the moon ring */
     ringVel = Math.max(-0.9, Math.min(0.9, ringVel + e.deltaY * 0.0042));
     return;
   }
   const lane = laneFromEvent(e);
-  const targets = !desktopMQ.matches ? [0]
-    : (lane === null ? [0, 1, 2] : [lane]);
+  const targets = [0];   // one shared ring
   const f = lane === null ? 0.3 : 1;
   targets.forEach(i => {
     vel[i] += e.deltaY * 0.0042 * f;
@@ -558,7 +551,7 @@ cosmos.addEventListener('wheel', e => {
   });
 }, { passive: false });
 
-/* ================= input: touch drag spins the lane under the finger ================= */
+/* ================= input: touch drag spins the ring under the finger ================= */
 
 let dragX = null, dragY = null, dragT = 0;
 
@@ -574,7 +567,7 @@ cosmos.addEventListener('pointerdown', e => {
 
 /* mobile focus mode: tapping empty space (not a world) returns to the sun */
 cosmos.addEventListener('click', e => {
-  if (!desktopMQ.matches && focusF > 0.5 && !e.target.closest('.cat-planet, .moon')) {
+  if (focusF > 0.5 && !e.target.closest('.cat-planet, .moon')) {
     selectHome();
   }
 });
@@ -600,13 +593,12 @@ window.addEventListener('pointermove', e => {
   if (r2 < 1) { dragX = e.clientX; dragY = e.clientY; dragT = now; return; }
   const dpa = (rx * dy - ry * dx) / r2;   // 1:1 wheel spin
 
-  if (!desktopMQ.matches && focusF > 0.5) {
+  if (focusF > 0.5) {
     /* focus mode: the same grab-and-spin, applied to the moon ring */
     ringScroll += dpa;
     ringVel = Math.max(-0.9, Math.min(0.9, dpa / dt));
   } else {
-    const targets = !desktopMQ.matches ? [0]
-      : (dragLane === null ? [0, 1, 2] : [dragLane]);
+    const targets = [0];   // one shared ring
     const f = dragLane === null ? 0.35 : 1;
     targets.forEach(i => {
       scroll[i] += dpa * f;
@@ -698,9 +690,9 @@ function step(dir) {
 function layout(t, dt) {
   const R = cosmosSize / 2;
 
-  /* MOBILE focus mode: the selected planet zooms to the sun's spot and
+  /* focus mode: the selected planet zooms to the sun's spot and
      its moons form a revolving ring around it; everything else fades */
-  const focused = !desktopMQ.matches && sel !== -1;
+  const focused = sel !== -1;
   const focusCi = focused ? FLAT[sel].ci : -1;
   focusF += ((focused ? 1 : 0) - focusF) * Math.min(1, dt * 4.5);
   if (focusF < 0.005) focusF = focused ? focusF : 0;
@@ -712,62 +704,40 @@ function layout(t, dt) {
   /* sun hands off to the planet mid-transition both ways, so neither
      ever feels absent */
   cosmos.classList.toggle('focus-mode', focusF > 0.35);
+  /* clear the inline eclipse transform once back on the main screen,
+     or the sun stays stuck at its enlarged halo size */
+  if (focusF <= 0.35 && avatarEl.style.transform) avatarEl.style.transform = '';
 
   CATS.forEach((cat, ci) => {
-    /* lane spin physics */
-    scroll[ci] += vel[ci] * dt;
-    vel[ci] *= Math.exp(-2.0 * dt);
-    if (Math.abs(vel[ci]) < 0.0005) vel[ci] = 0;
-
+    /* shared ring physics: hovering a planet pauses the whole ring (desktop) */
+    const paused = desktopMQ.matches && hoverLane !== null;
+    if (paused) {
+      vel[0] = 0;
+    } else {
+      laneTime[0] += dt;
+    }
+    const lt = Math.max(0, laneTime[0]);
     const laneR = GEO.lanes[ci] * R;
     const isFocus = ci === focusCi;
     const ps = GEO.pscale || 1;
+    const ms = GEO.mscale || 1;
+    const dir = CATS[0].drift >= 0 ? 1 : -1;
 
-    /* planet: anywhere around the sun; all start stacked at 12 o'clock
-       and hold there briefly before drifting apart */
-    /* desktop: hovering a planet freezes that lane's motion */
-    const paused = desktopMQ.matches && hoverLane === ci;
-    if (paused) {
-      vel[ci] = 0;
-    } else {
-      laneTime[ci] += dt;
-    }
-    const lt = Math.max(0, laneTime[ci]);
-    let pa;
-    if (!desktopMQ.matches) {
-      /* one shared lane: planets evenly spaced (120deg), rotating together */
-      const base = (CATS[0].start * Math.PI / 180) + scroll[0] + lt * CATS[0].drift
-                 + CATS[0].sway.amp * Math.sin(lt * CATS[0].sway.f + CATS[0].sway.ph);
-      pa = base + ci * (Math.PI * 2 / 3);
-    } else {
-      pa = (cat.start * Math.PI / 180) + scroll[ci] + lt * cat.drift
-         + cat.sway.amp * Math.sin(lt * cat.sway.f + cat.sway.ph);
-    }
-    const bobSrc = desktopMQ.matches ? cat.bob : CATS[0].bob;
+    /* planet: evenly spaced (120deg) on the shared flat ring; slots are
+       shuffled each load, so every visit opens with a unique arrangement */
+    const pa = (cat.start * Math.PI / 180) + scroll[0] + lt * CATS[0].drift
+             + CATS[0].sway.amp * Math.sin(lt * CATS[0].sway.f + CATS[0].sway.ph);
+    const bobSrc = CATS[0].bob;
     const rr = laneR + bobSrc.amp * Math.sin(lt * bobSrc.f + bobSrc.ph);
-    const dir = (desktopMQ.matches ? cat.drift : CATS[0].drift) >= 0 ? 1 : -1;
-    const tilt = desktopMQ.matches ? 1 : TILT;
-    let px, py, s, op, z;
-    if (desktopMQ.matches) {
-      px = Math.sin(pa) * rr;
-      py = -Math.cos(pa) * rr;
-      const norm = (py / R + 1) / 2;    // 0 = far/top, 1 = near/bottom
-      s = 0.9 + 0.18 * norm;
-      op = 0.72 + 0.28 * norm;
-      z = 10 + Math.round(norm * 10);
-    } else {
-      /* flat top-down: uniform size/brightness, planets layered above the sun */
-      px = Math.sin(pa) * rr;
-      py = -Math.cos(pa) * rr;
-      s = 1;
-      op = 1;
-      z = 14;
-    }
+    const px = Math.sin(pa) * rr;
+    const py = -Math.cos(pa) * rr;
+    let s = 1, op = 1, z = 14;        // flat top-down: uniform, above the sun
     let sF = s;                       // zoom scale (grows in focus)
     const w = worlds[ci];
 
     if (isFocus && e > 0) {
-      /* zoom to center + grow to exactly the sun's on-screen size */
+      /* zoom to center + grow to exactly the sun's size: same visual diameter
+         so the planet fully covers it edge-to-edge (a clean eclipse) */
       const fx = px * (1 - e), fy = py * (1 - e);
       sF = (avatarEl.offsetWidth / 2) / ((cat.psize / 2) * ps);
       w.wrap.style.transform =
@@ -775,37 +745,41 @@ function layout(t, dt) {
       w.wrap.style.opacity = '1';
       w.wrap.style.zIndex = '30';
       w.wrap.style.pointerEvents = e > 0.6 ? '' : 'none';
-      /* sun eclipse: a halo ~25% larger than the focused planet */
-      const sunScale = 1.25;
+      /* sun eclipse: the sun keeps its normal size, the planet covers it */
+      const sunScale = 1;
       avatarEl.style.transform = `translate(-50%, -50%) scale(${sunScale.toFixed(3)})`;
+      /* the label grows into the planet's full name, wrapped to stay
+         inside the enlarged planet (no bleeding off the disc) */
+      if (w.labelEl) {
+        w.labelEl.textContent = e > 0.6 ? cat.planet.name : cat.label;
+        w.labelEl.style.whiteSpace = 'normal';
+        w.labelEl.style.maxWidth = ((cat.psize * ps * sF) * 1.06 / sF) + 'px';   // = 106% of planet width: fits the longest single word
+      }
     } else {
       w.wrap.style.transform =
         `translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) translate(-50%, -50%) scale(${s.toFixed(3)})`;
       w.wrap.style.opacity = (op * (1 - e)).toFixed(3);
       w.wrap.style.zIndex = String(z);
       w.wrap.style.pointerEvents = e > 0.5 ? 'none' : '';
+      if (w.labelEl) {
+        w.labelEl.textContent = cat.label;
+        w.labelEl.style.whiteSpace = '';      // restore base CSS
+        w.labelEl.style.maxWidth = '';
+      }
     }
 
 
 
-    /* moons: trailing line behind the planet, along the same lane,
-       uniform spacing derived from real sizes. Rigid: the whole line
-       rotates together with the planet. */
-    /* moons: half lead the planet, half trail behind it, all on the lane,
-       uniform spacing derived from real sizes. Rigid: the whole formation
-       rotates together with the planet.
-       MOBILE ONLY: a planet's moons collapse into it unless that planet's
-       section is the selected one (Info/home = all collapsed). */
-    const mobileMoons = !desktopMQ.matches;
-    const shown = !mobileMoons || (sel !== -1 && FLAT[sel].ci === ci);
-    if (MOONSHOWN[ci] !== undefined && MOONSHOWN[ci] !== shown && mobileMoons) {
+    /* moons: hidden on the main screen (both platforms); when a planet is
+       selected they swirl into the revolving ring around it. */
+    const shown = focusCi === ci;
+    if (MOONSHOWN[ci] !== undefined && MOONSHOWN[ci] !== shown) {
       cosmos.classList.add('moon-anim');
       clearTimeout(moonAnimTimer);
       moonAnimTimer = setTimeout(() => cosmos.classList.remove('moon-anim'), 450);
     }
     MOONSHOWN[ci] = shown;
 
-    const ms = GEO.mscale || 1;
     const moonR = 17 * ms, pad = 10 * ms;
     const step = (moonR * 2 + pad) / laneR;
     const first = ((cat.psize / 2) * ps + moonR + pad) / laneR;
@@ -826,20 +800,12 @@ function layout(t, dt) {
       const a = ahead
         ? pa + dir * (first + (iA++) * step)
         : pa - dir * (first + (iB++) * step);
-      let mx, my, ms, mz, mOp = 1;
-      if (!desktopMQ.matches) {
-        /* flat top-down: uniform, layered above the sun */
-        mx = Math.sin(a) * laneR;
-        my = -Math.cos(a) * laneR;
-        ms = 1;
-        mz = 14;
-      } else {
-        mx = Math.sin(a) * laneR;
-        my = -Math.cos(a) * laneR;
-        const mnorm = (my / R + 1) / 2;
-        ms = 0.85 + 0.2 * mnorm;
-        mz = 10 + Math.round(mnorm * 10);
-      }
+      /* flat top-down: uniform, layered above the sun (mirrored) */
+      let mx = Math.sin(a) * laneR;
+      let my = -Math.cos(a) * laneR;
+      let ms = 1;
+      let mz = 14;
+      let mOp = 1;
 
       if (isFocus && e > 0) {
         /* swirl from the trail into a revolving ring around the center;
@@ -847,7 +813,7 @@ function layout(t, dt) {
         const n = cat.moons.length;
         const planetHalfVis = ((cat.psize / 2) * ps) * sF;
         const moonVisR = (17 * ms) * (cat.psize / 34) * 1.18;
-        const ringR = planetHalfVis + 10 + moonVisR;
+        const ringR = planetHalfVis + 26 + moonVisR;
         const ra = (mi * (Math.PI * 2) / n) + ci * 0.9 + ringScroll + t * 0.12 * dir;
         mx += (Math.sin(ra) * ringR - mx) * e;
         my += (-Math.cos(ra) * ringR - my) * e;
@@ -864,6 +830,7 @@ function layout(t, dt) {
   });
 }
 
+/* frame loop: layout() runs once per display frame */
 let lastNow = performance.now();
 
 function frame(now) {
